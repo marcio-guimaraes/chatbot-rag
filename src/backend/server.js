@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // --- Importações das Bibliotecas ---
 const express = require('express');
+const cors = require('cors');
 const { FaissStore } = require("@langchain/community/vectorstores/faiss");
 const { ChatGroq } = require("@langchain/groq");
 const { ChatPromptTemplate } = require("@langchain/core/prompts");
@@ -15,6 +16,7 @@ const { HuggingFaceInferenceEmbeddings } = require("@langchain/community/embeddi
 
 // --- Inicializações ---
 const app = express();
+app.use(cors()); 
 const PORT = 3000;
 
 const model = new ChatGroq({
@@ -95,7 +97,7 @@ app.get('/chat', async (req, res) => {
     }
 });
 
-// --- Inicia o Servidor (LÓGICA CORRIGIDA) ---
+// --- Inicia o Servidor ---
 async function startServer() {
     console.log("Iniciando o sistema RAG... Isso pode levar alguns segundos.");
     // 1. Espera o RAG ficar pronto

@@ -1,64 +1,118 @@
-# Chatbot Site com RAG e Groq
+# 🤖 Chatbot Inteligente com RAG e Groq
 
-Este projeto é um site que implementa um chatbot inteligente utilizando RAG (Retrieval-Augmented Generation) e Groq para respostas rápidas e contextualizadas. O objetivo é facilitar o aprendizado e a experimentação dessas tecnologias em aplicações web.
-
-## Funcionalidades
-
-- Interface web para conversar com o chatbot
-- RAG: busca de informações em base de dados/documentos para enriquecer as respostas
-- Groq: motor de inferência para respostas rápidas com LLMs (Large Language Models)
-- Fácil de personalizar e expandir
-
-## Como começar
-
-1. **Clone o projeto ou crie uma nova pasta para ele**
-2. **Adicione este README.md à raiz do projeto** (pasta principal)
-3. **Configure as dependências**:
-   - Node.js (recomendado para backend e frontend simples)
-   - Frameworks sugeridos: [LangChain](https://js.langchain.com/), [Groq API](https://groq.com/), [ChromaDB ou FAISS] para busca vetorial
-   - Para interface web: [React](https://react.dev/) ou [Next.js](https://nextjs.org/)
-
-4. **Estrutura sugerida de pastas**:
-    ```
-    /meu-chatbot-rag-groq
-      |-- README.md
-      |-- package.json
-      |-- /src
-          |-- /backend
-          |-- /frontend
-      |-- /data
-      |-- .env
-    ```
-
-## Passo a passo para montar o site
-
-1. **Backend**:  
-   Configure um servidor (Node.js ou Python) que conecta com Groq e realiza a busca RAG nos seus documentos.  
-   Exemplos de integração: [NikhilAdvani/RAG-Chatbot-using-Groq](https://github.com/NikhilAdvani/RAG-Chatbot-using-Groq)
-
-2. **Frontend**:  
-   Monte uma interface simples para conversa (React, Next.js ou até HTML puro).
-
-3. **Banco de dados vetorial**:  
-   Use ChromaDB ou FAISS para indexar e buscar trechos de documentos conforme a pergunta do usuário.
-
-4. **Configuração Groq**:  
-   Obtenha uma chave de API Groq, configure nos arquivos `.env` e integre ao backend.
-
-## Exemplos de repositórios para consulta
-
-- [RAG Chatbot usando Groq e LangChain](https://github.com/NikhilAdvani/RAG-Chatbot-using-Groq)
-- [Groq-RAG](https://github.com/mickymultani/Groq-RAG)
-
-## Como colaborar e pedir ajuda
-
-- Abra uma issue aqui no GitHub se tiver dúvidas ou sugestões.
-- Pode pedir ajuda para integração, configuração ou personalização do chatbot!
+Este projeto implementa um **chatbot inteligente** utilizando **RAG (Retrieval-Augmented Generation)** e **Groq** para respostas rápidas e contextualizadas. Ele combina um backend robusto e um frontend amigável para interação com o usuário.
 
 ---
 
-**Dica:**  
-Salve este arquivo como `README.md` na raiz do seu projeto.  
-No VSCode, basta clicar com o botão direito na pasta principal > "Novo arquivo" > digitar `README.md` > colar o conteúdo acima.
+## ✨ Funcionalidades
 
-Se quiser, posso te ajudar a gerar a estrutura inicial do projeto ou criar arquivos de exemplo para começar!
+- Interface web moderna com **React** e **TypeScript**
+- **RAG**: Busca informações em uma base local (`data/conhecimento.txt`) para enriquecer respostas
+- **Groq**: LLM de alta velocidade para respostas contextualizadas
+- Backend e frontend desacoplados, rodando simultaneamente
+- Atualização fácil da base de conhecimento
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+| Camada      | Tecnologias                                                                 |
+|-------------|-----------------------------------------------------------------------------|
+| **Backend** | Node.js, Express, LangChain.js, Groq, FAISS (em memória)                    |
+| **Frontend**| React, TypeScript, Vite, SWC                                                |
+| **Embeddings** | Hugging Face Inference API                                              |
+
+---
+
+## 🚀 Como Rodar o Projeto Localmente
+
+### 📋 Pré-requisitos
+
+1. **Configurar Chaves de API**
+
+   Crie um arquivo `.env` na raiz do projeto com:
+
+   ```env
+   GROQ_API_KEY=gsk_SUA_CHAVE_DA_GROQ_AQUI
+   HUGGINGFACE_API_KEY=hf_SUA_CHAVE_DO_HUGGING_FACE_AQUI
+   ```
+
+   **Como obter as chaves:**
+
+   - **Groq:**  
+     Acesse [console.groq.com/keys](https://console.groq.com/keys)  
+     Clique em "+ Create API Key", nomeie e copie a chave gerada.
+
+   - **Hugging Face:**  
+     Acesse [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)  
+     Clique em "+ New token", nomeie, selecione *write* e copie a chave (começa com `hf_...`).
+
+2. **Instalar Dependências**
+
+   - **Backend (raiz do projeto):**
+     ```bash
+     npm install --legacy-peer-deps
+     ```
+     > Usamos `--legacy-peer-deps` para evitar conflitos de versão do LangChain.
+
+   - **Frontend:**
+     ```bash
+     cd src/frontend
+     npm install
+     ```
+
+3. **Rodar a Aplicação**
+
+   Abra dois terminais:
+
+   - **Terminal 1 – Backend**
+     ```bash
+     cd chatbot-rag
+     node src/backend/server.js
+     ```
+     Aguarde a mensagem:  
+     `✅ Sistema RAG pronto e indexado!`  
+     Deixe este terminal aberto.
+
+   - **Terminal 2 – Frontend**
+     ```bash
+     cd src/frontend
+     npm run dev
+     ```
+     O terminal mostrará a URL do frontend (geralmente `http://localhost:5173`).  
+     Acesse no navegador.
+
+4. **Adicionar ou Atualizar Conhecimento**
+
+   - Edite o arquivo `data/conhecimento.txt` conforme desejar.
+   - Salve o arquivo.
+   - Reinicie o backend para reindexar:
+     ```bash
+     node src/backend/server.js
+     ```
+
+---
+
+## 📄 Estrutura do Projeto
+
+```plaintext
+chatbot-rag/
+├─ data/
+│  └─ conhecimento.txt     # Base de conhecimento
+├─ src/
+│  ├─ backend/
+│  │  └─ server.js         # Backend Node.js + RAG
+│  └─ frontend/            # Frontend React + Vite
+├─ .env                    # Chaves de API
+└─ README.md
+```
+
+---
+
+## ✅ Observações
+
+- Backend e frontend devem rodar simultaneamente para o chatbot funcionar.
+- Atualizações na base de conhecimento exigem reinício do backend.
+- Certifique-se de que as chaves de API estão corretas e ativas.
+
+---
