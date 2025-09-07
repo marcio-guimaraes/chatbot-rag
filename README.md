@@ -6,21 +6,21 @@ Este projeto implementa um **chatbot inteligente** utilizando **RAG (Retrieval-A
 
 ## ✨ Funcionalidades
 
-- Interface web moderna com **React** e **TypeScript**
-- **RAG**: Busca informações em uma base local (`data/conhecimento.txt`) para enriquecer respostas
-- **Groq**: LLM de alta velocidade para respostas contextualizadas
-- Backend e frontend desacoplados, rodando simultaneamente
-- Atualização fácil da base de conhecimento
+* Interface web moderna com **React** e **TypeScript**
+* **RAG**: Busca informações em uma base local (`data/conhecimento.txt`) para enriquecer respostas
+* **Groq**: LLM de alta velocidade para respostas contextualizadas
+* Backend e frontend desacoplados, rodando simultaneamente
+* Atualização fácil da base de conhecimento
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Camada      | Tecnologias                                                                 |
-|-------------|-----------------------------------------------------------------------------|
-| **Backend** | Node.js, Express, LangChain.js, Groq, FAISS (em memória)                    |
-| **Frontend**| React, TypeScript, Vite, SWC                                                |
-| **Embeddings** | Hugging Face Inference API                                              |
+| Camada         | Tecnologias                                              |
+| -------------- | -------------------------------------------------------- |
+| **Backend**    | Node.js, Express, LangChain.js, Groq, FAISS (em memória) |
+| **Frontend**   | React, TypeScript, Vite, SWC                             |
+| **Embeddings** | Hugging Face Inference API                               |
 
 ---
 
@@ -28,68 +28,98 @@ Este projeto implementa um **chatbot inteligente** utilizando **RAG (Retrieval-A
 
 ### 📋 Pré-requisitos
 
-1. **Configurar Chaves de API**
+* **Node.js** ≥ 20 → [Download Node.js](https://nodejs.org/)
+  Verifique a versão:
 
-   Crie um arquivo `.env` na raiz do projeto com:
+  ```bash
+  node -v
+  ```
 
-   ```env
-   GROQ_API_KEY=gsk_SUA_CHAVE_DA_GROQ_AQUI
-   HUGGINGFACE_API_KEY=hf_SUA_CHAVE_DO_HUGGING_FACE_AQUI
-   ```
+* **Git** → [Download Git](https://git-scm.com/)
 
-   **Como obter as chaves:**
+---
 
-   - **Groq:**  
-     Acesse [console.groq.com/keys](https://console.groq.com/keys)  
-     Clique em "+ Create API Key", nomeie e copie a chave gerada.
+### 1️⃣ Clonar o Repositório
 
-   - **Hugging Face:**  
-     Acesse [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)  
-     Clique em "+ New token", nomeie, selecione *write* e copie a chave (começa com `hf_...`).
+```bash
+git clone https://github.com/marcio-guimaraes/chatbot-rag.git
+cd chatbot-rag
+```
 
-2. **Instalar Dependências**
+---
 
-   - **Backend (raiz do projeto):**
-     ```bash
-     npm install --legacy-peer-deps
-     ```
-     > Usamos `--legacy-peer-deps` para evitar conflitos de versão do LangChain.
+### 2️⃣ Configurar Chaves de API
 
-   - **Frontend:**
-     ```bash
-     cd src/frontend
-     npm install
-     ```
+Crie um arquivo `.env` na raiz do projeto com:
 
-3. **Rodar a Aplicação**
+```env
+GROQ_API_KEY=gsk_SUA_CHAVE_DA_GROQ_AQUI
+HUGGINGFACE_API_KEY=hf_SUA_CHAVE_DO_HUGGING_FACE_AQUI
+```
 
-   Abra dois terminais:
+**Como obter as chaves:**
 
-   - **Terminal 1 – Backend**
-     ```bash
-     cd chatbot-rag
-     node src/backend/server.js
-     ```
-     Aguarde a mensagem:  
-     `✅ Sistema RAG pronto e indexado!`  
-     Deixe este terminal aberto.
+* **Groq:**
+  [console.groq.com/keys](https://console.groq.com/keys) → "+ Create API Key" → nomeie → copie a chave.
 
-   - **Terminal 2 – Frontend**
-     ```bash
-     cd src/frontend
-     npm run dev
-     ```
-     O terminal mostrará a URL do frontend (geralmente `http://localhost:5173`).  
-     Acesse no navegador.
+* **Hugging Face:**
+  [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) → "+ New token" → nomeie → role *write* → copie a chave (`hf_...`).
 
-4. **Adicionar ou Atualizar Conhecimento**
+---
 
-   - Edite o arquivo `data/conhecimento.txt` conforme desejar.
-   - Salve o arquivo.
-   - Reinicie o backend para reindexar:
-     ```bash
-     node src/backend/server.js
-     ```
+### 3️⃣ Instalar e Rodar o Backend
+
+* **Instalar dependências do backend:**
+
+```bash
+npm install --legacy-peer-deps
+```
+
+> ⚠️ Usamos `--legacy-peer-deps` para evitar conflitos de versão do LangChain.
+
+* **Rodar backend:**
+
+```bash
+node src/backend/server.js
+```
+
+Aguarde:
+`✅ Sistema RAG pronto e indexado!`
+Deixe este terminal aberto.
+
+---
+
+### 4️⃣ Instalar e Rodar o Frontend
+
+Abra um **novo terminal**:
+
+* **Instalar dependências do frontend:**
+
+```bash
+cd src/frontend
+npm install
+```
+
+* **Rodar frontend:**
+
+```bash
+npm run dev
+```
+
+O terminal mostrará a URL do frontend (geralmente `http://localhost:5173`).
+Acesse no navegador.
+
+---
+
+### 5️⃣ Adicionar ou Atualizar Conhecimento
+
+* Edite o arquivo `data/conhecimento.txt`.
+* Salve o arquivo.
+* Reinicie o backend para reindexar:
+
+```bash
+node src/backend/server.js
+```
 
 ---
 
@@ -111,8 +141,6 @@ chatbot-rag/
 
 ## ✅ Observações
 
-- Backend e frontend devem rodar simultaneamente para o chatbot funcionar.
-- Atualizações na base de conhecimento exigem reinício do backend.
-- Certifique-se de que as chaves de API estão corretas e ativas.
-
----
+* Backend e frontend devem rodar simultaneamente para o chatbot funcionar.
+* Atualizações na base de conhecimento exigem reinício do backend.
+* Certifique-se de que as chaves de API estão corretas e ativas.
