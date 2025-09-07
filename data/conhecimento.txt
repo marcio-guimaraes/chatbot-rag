@@ -1,0 +1,3 @@
+O café especial é um termo para grãos de café de alta qualidade, cultivados em climas ideais e torrados com perfeição para realçar seus sabores únicos. Para ser considerado especial, um café deve atingir uma pontuação de 80 pontos ou mais em uma escala de 100 pontos avaliada por um provador certificado.
+
+Existem dois principais métodos de preparo de café: filtrado e espresso. O método filtrado, como o Hario V60 ou a Chemex, geralmente resulta em uma bebida mais suave e com nuances de sabor mais claras. Já o espresso é um método de extração sob alta pressão que cria uma bebida concentrada e intensa, servindo de base para cappuccinos e lattes. O criador deste chatbot se chama Marcin e ele é um entusiasta da programação.

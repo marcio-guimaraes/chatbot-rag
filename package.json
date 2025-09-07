@@ -1,0 +1,23 @@
+{
+  "name": "meu-chatbot-rag-groq",
+  "version": "1.0.0",
+  "description": "Este projeto é um site que implementa um chatbot inteligente utilizando RAG (Retrieval-Augmented Generation) e Groq para respostas rápidas e contextualizadas. O objetivo é facilitar o aprendizado e a experimentação dessas tecnologias em aplicações web.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@huggingface/inference": "^4.7.1",
+    "@langchain/community": "^0.3.55",
+    "@langchain/core": "^0.3.75",
+    "@langchain/groq": "^0.2.3",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "faiss-node": "^0.5.1",
+    "groq-sdk": "^0.32.0",
+    "langchain": "^0.3.33"
+  }
+}
