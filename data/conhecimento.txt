@@ -1,3 +1,122 @@
-O café especial é um termo para grãos de café de alta qualidade, cultivados em climas ideais e torrados com perfeição para realçar seus sabores únicos. Para ser considerado especial, um café deve atingir uma pontuação de 80 pontos ou mais em uma escala de 100 pontos avaliada por um provador certificado.
+Não precisa começar as frases com "De acordo com o contexto fornecido" ou frases do tipo.
 
-Existem dois principais métodos de preparo de café: filtrado e espresso. O método filtrado, como o Hario V60 ou a Chemex, geralmente resulta em uma bebida mais suave e com nuances de sabor mais claras. Já o espresso é um método de extração sob alta pressão que cria uma bebida concentrada e intensa, servindo de base para cappuccinos e lattes. O criador deste chatbot se chama Marcin e ele é um entusiasta da programação.
+Truco Piauiense
+===============
+
+O Truco Piauiense é uma variação regional do truco brasileiro, jogado com 4 jogadores divididos em duplas. O objetivo é ser a primeira dupla a atingir 12 pontos.
+
+-------------------------------------
+
+Estrutura do Jogo
+-----------------
+
+- Número de jogadores: 4 (em duplas).
+- Baralho: 30 cartas (retiram-se 8, 9 e 10).
+- Distribuição: cada jogador recebe 3 cartas.
+- Ordem das cartas:
+  - Do mais forte para o mais fraco:
+    Manilhas fixas:
+    1. 4 de paus
+    2. 7 de copas
+    3. Ás de espadas
+    4. 7 de ouros
+    5. 4 de ouros
+    (essas são as 5 manilhas fixas, em ordem decrescente de força)
+  - Demais cartas seguem a ordem: 3 > 2 > A > K > Q > J.
+
+-------------------------------------
+
+Distribuição das Cartas
+-----------------------
+
+1. O jogador que embaralha pode ver as cartas antes de repassar o baralho.
+2. O jogador à esquerda do embaralhador corta o baralho, podendo dar até três cortes no máximo.
+   - Durante o corte, esse jogador pode também queimar cartas (retirar e descartar sem mostrar).
+3. Após o corte, as cartas são distribuídas no sentido horário.
+4. O primeiro a receber e jogar é o jogador à direita de quem cortou.
+
+Descer e Subir na Distribuição
+- Descer: quando o embaralhador coloca a primeira carta para baixo do monte (no fundo do baralho) antes de começar a distribuição.
+- Subir: quando o embaralhador coloca a primeira carta para cima do monte e depois inicia a distribuição.
+- Essas práticas são permitidas e usadas para confundir os adversários ou alterar a ordem em que as cartas podem sair.
+
+Exemplo:
+- Se o embaralhador suspeita que uma manilha pode estar próxima do topo, ele pode “descer” uma carta para escondê-la mais no baralho.
+- Já o “subir” pode ser feito para tentar trazer uma carta forte para o início da distribuição.
+
+-------------------------------------
+
+Rodadas e Dinâmica
+------------------
+
+- Cada mão tem até 3 rodadas.
+- Quem vencer 2 rodadas primeiro vence a mão.
+- A partir da segunda rodada, os jogadores podem jogar uma carta virada de costas, que não tem valor algum e serve apenas como blefe.
+- Quem vence uma rodada é quem inicia a próxima.
+- No início de uma nova mão, reinicia-se a ordem de jogada.
+
+-------------------------------------
+
+Blefe
+-----
+
+- O blefe é uma parte fundamental do Truco Piauiense.
+- Formas de blefar:
+  1. Jogar carta virada (a partir da segunda rodada).
+  2. Pedir truco, seis, nove ou doze mesmo sem cartas fortes.
+  3. Expressões e gestos: demonstrar confiança ou fingir insegurança para enganar o adversário.
+  4. Ritmo da jogada: jogar rápido demais ou demorar de propósito para confundir.
+
+Exemplo:
+- Um jogador está com cartas fracas (K, Q, J). Mesmo assim, ele pede “Truco!”.
+- Os adversários acreditam que ele tem uma manilha ou um 3 e aceitam.
+- A dupla dele pode acabar vencendo só na base do medo ou erro de cálculo dos rivais.
+
+-------------------------------------
+
+Pontuação
+---------
+
+- Mão normal: 1 ponto.
+- Truco aceito: 3 pontos.
+- Seis aceito: 6 pontos.
+- Nove aceito: 9 pontos.
+- Doze aceito: 12 pontos (vence o jogo).
+- Se o adversário correr (não aceitar): a dupla que pediu ganha os pontos da aposta anterior.
+
+-------------------------------------
+
+Mão de 10
+---------
+
+- Quando uma dupla atinge 10 pontos, entra em Mão de 10.
+- Nessa situação:
+  1. Os jogadores da dupla podem ver as cartas um do outro.
+  2. Antes de jogar, devem decidir se:
+     - Correm: entregam 1 ponto aos adversários.
+     - Jogam: a mão já vale 3 pontos automaticamente, como se fosse um truco.
+     - Os jogadores que não estão na mão de 10 podem pedir 6.
+
+Exemplo:
+- A dupla A está com 10 pontos.
+- Um jogador recebeu 4 de paus e o parceiro recebeu 7 de copas.
+- Eles olham juntos e decidem jogar, pois têm duas manilhas muito fortes.
+
+-------------------------------------
+
+Mão de Ferro
+------------
+
+- Quando as duas duplas chegam a 11 pontos ao mesmo tempo.
+- Nesse caso:
+  - Todos jogam com as cartas viradas de cabeça para baixo.
+  - Ninguém pode correr.
+  - A mão vale 3 pontos automaticamente.
+
+-------------------------------------
+
+Final da Partida
+----------------
+
+- A partida termina quando uma dupla atinge 12 pontos.
+- Se uma dupla perder sem fazer nenhum ponto, deve passar por baixo da mesa.
