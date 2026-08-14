@@ -3,7 +3,6 @@ require('dotenv').config();
 
 // --- Importações das Bibliotecas ---
 const express = require('express');
-const cors = require('cors');
 const { FaissStore } = require("@langchain/community/vectorstores/faiss");
 const { ChatGroq } = require("@langchain/groq");
 const { ChatPromptTemplate } = require("@langchain/core/prompts");
@@ -16,8 +15,8 @@ const { HuggingFaceInferenceEmbeddings } = require("@langchain/community/embeddi
 
 // --- Inicializações ---
 const app = express();
-app.use(cors()); 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const HOST = '127.0.0.1'; // acessível apenas localmente na VPS (ex: pelo truco-backend)
 
 const model = new ChatGroq({
     apiKey: process.env.GROQ_API_KEY,
@@ -104,8 +103,8 @@ async function startServer() {
     await setupRAG();
     
     // 2. SÓ ENTÃO, inicia o servidor
-    app.listen(PORT, () => {
-        console.log(`Servidor pronto e rodando na porta ${PORT}`);
+    app.listen(PORT, HOST, () => {
+        console.log(`Servidor pronto e rodando em http://${HOST}:${PORT}`);
     });
 }
 
