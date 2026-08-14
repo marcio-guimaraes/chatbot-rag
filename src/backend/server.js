@@ -4,11 +4,6 @@ require('dotenv').config();
 // --- Importações das Bibliotecas ---
 const express = require('express');
 const { FaissStore } = require("@langchain/community/vectorstores/faiss");
-const { ChatGroq } = require("@langchain/groq");
-const { ChatPromptTemplate } = require("@langchain/core/prompts");
-const { StringOutputParser } = require('@langchain/core/output_parsers');
-const { createStuffDocumentsChain } = require("langchain/chains/combine_documents");
-const { createRetrievalChain } = require("langchain/chains/retrieval");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const { TextLoader } = require("langchain/document_loaders/fs/text");
 const { HuggingFaceInferenceEmbeddings } = require("@langchain/community/embeddings/hf");
@@ -18,18 +13,60 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = '127.0.0.1'; // acessível apenas localmente na VPS (ex: pelo truco-backend)
 
-const model = new ChatGroq({
-    apiKey: process.env.GROQ_API_KEY,
-    model: "llama-3.1-8b-instant",
-});
-
 const embeddings = new HuggingFaceInferenceEmbeddings({
     apiKey: process.env.HUGGINGFACE_API_KEY,
     model: "sentence-transformers/all-MiniLM-L6-v2",
 });
 
+// A geração final é feita chamando a API da Groq direto com o fetch nativo do
+// Node, em vez de passar pelo ChatGroq/@langchain/groq. A versão do groq-sdk
+// que o @langchain/groq usa por baixo (toda a linha 0.x) depende do
+// node-fetch@2, que tem um bug conhecido de "Premature close" ao descomprimir
+// respostas gzip em Node 20+/22 — as chamadas travavam e nunca respondiam.
+// Subir pra @langchain/groq 1.x corrigiria isso, mas exige subir junto
+// langchain, @langchain/community e @langchain/core pra suas linhas 1.x
+// (mudança bem maior). Essa chamada direta evita o bug com uma mudança pequena.
+async function gerarResposta(pergunta, contexto) {
+    const promptText = `Você é um assistente prestativo. Responda a pergunta do usuário baseado apenas no contexto fornecido.
+Se a informação não estiver no contexto, diga que você não sabe a resposta.
+
+Contexto:
+${contexto}
+
+Pergunta:
+${pergunta}`;
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25_000);
+
+    try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                model: "llama-3.1-8b-instant",
+                messages: [{ role: "user", content: promptText }],
+            }),
+            signal: controller.signal,
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`Groq respondeu ${response.status}: ${errorBody}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content;
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 // --- Lógica Principal do RAG ---
-let retrievalChain;
+let retriever;
 
 async function setupRAG() {
     const loader = new TextLoader("data/conhecimento.txt");
@@ -42,29 +79,7 @@ async function setupRAG() {
     const splitDocs = await textSplitter.splitDocuments(docs);
 
     const vectorstore = await FaissStore.fromDocuments(splitDocs, embeddings);
-    const retriever = vectorstore.asRetriever();
-
-    const prompt = ChatPromptTemplate.fromTemplate(`
-        Você é um assistente prestativo. Responda a pergunta do usuário baseado apenas no contexto fornecido.
-        Se a informação não estiver no contexto, diga que você não sabe a resposta.
-
-        Contexto:
-        {context}
-
-        Pergunta:
-        {input}
-    `);
-
-    const combineDocsChain = await createStuffDocumentsChain({
-        llm: model,
-        prompt: prompt,
-        outputParser: new StringOutputParser(),
-    });
-
-    retrievalChain = await createRetrievalChain({
-        retriever,
-        combineDocsChain,
-    });
+    retriever = vectorstore.asRetriever();
 
     console.log("✅ Sistema RAG pronto e indexado!");
 }
@@ -81,15 +96,17 @@ app.get('/chat', async (req, res) => {
         return res.status(400).json({ error: "A pergunta é obrigatória. Use o formato: /chat?question=SuaPergunta" });
     }
 
-    if (!retrievalChain) {
+    if (!retriever) {
         return res.status(503).json({ error: "O sistema RAG ainda não está pronto. Tente novamente em alguns instantes." });
     }
 
     try {
         console.log(`Recebida a pergunta: ${userQuestion}`);
-        const result = await retrievalChain.invoke({ input: userQuestion });
-        console.log("Resposta gerada:", result.answer);
-        res.json({ answer: result.answer });
+        const docsRelevantes = await retriever.invoke(userQuestion);
+        const contexto = docsRelevantes.map((doc) => doc.pageContent).join("\n\n");
+        const answer = await gerarResposta(userQuestion, contexto);
+        console.log("Resposta gerada:", answer);
+        res.json({ answer });
     } catch (error) {
         console.error("Erro ao processar a pergunta:", error);
         res.status(500).json({ error: "Falha ao gerar a resposta." });
