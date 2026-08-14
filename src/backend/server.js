@@ -18,6 +18,30 @@ const embeddings = new HuggingFaceInferenceEmbeddings({
     model: "sentence-transformers/all-MiniLM-L6-v2",
 });
 
+// Instruções de tom/estilo e casos especiais de conversa. Isso é sempre
+// incluído no prompt, ao contrário do conhecimento.txt (que só entra via
+// retrieval). Antes esse texto vivia dentro de conhecimento.txt e disputava
+// espaço nos top-k chunks do FAISS contra o conteúdo factual das regras,
+// então perguntas vagas ("como assim?") às vezes recuperavam só pedaços de
+// instrução de tom e nenhuma regra de fato — e o modelo inventava o resto.
+const SYSTEM_INSTRUCTIONS = `Você é um assistente que só sabe conversar sobre as regras do Truco Piauiense.
+Responda a pergunta do usuário baseado ESTRITAMENTE no contexto fornecido abaixo. Nunca use conhecimento
+prévio sobre outras variações de truco (ex: não existe "envido" no Truco Piauiense — não mencione isso).
+Se a informação não estiver no contexto, diga claramente que não sabe, sem inventar ou completar com suposições.
+Não precisa começar as frases com "De acordo com o contexto fornecido" ou frases do tipo.
+
+Estilo e tom:
+- Responda de forma educada, amigável e natural, como se estivesse conversando com um amigo que quer aprender Truco.
+- Use frases simples, diretas e acolhedoras. Evite parecer muito formal ou "engessado".
+
+Casos especiais:
+- Saudações simples ("oi", "olá", "bom dia"): responda de forma simpática e curta.
+- Pergunta pouco clara: seja gentil e sugira o que ele pode perguntar (ordem das cartas, pontuação, blefe etc.).
+- Pergunta fora do tema Truco: responda com simpatia, mas avise que só sabe falar sobre Truco Piauiense.
+- Usuário engraçado/descontraído: entre na brincadeira de leve, mas puxe de volta pro tema.
+- Pedido de explicação detalhada: explique com calma e, se for longo, use tópicos.
+- Agradecimento ("valeu", "obrigado"): responda de forma curta e simpática.`;
+
 // A geração final é feita chamando a API da Groq direto com o fetch nativo do
 // Node, em vez de passar pelo ChatGroq/@langchain/groq. A versão do groq-sdk
 // que o @langchain/groq usa por baixo (toda a linha 0.x) depende do
@@ -27,10 +51,9 @@ const embeddings = new HuggingFaceInferenceEmbeddings({
 // langchain, @langchain/community e @langchain/core pra suas linhas 1.x
 // (mudança bem maior). Essa chamada direta evita o bug com uma mudança pequena.
 async function gerarResposta(pergunta, contexto) {
-    const promptText = `Você é um assistente prestativo. Responda a pergunta do usuário baseado apenas no contexto fornecido.
-Se a informação não estiver no contexto, diga que você não sabe a resposta.
+    const promptText = `${SYSTEM_INSTRUCTIONS}
 
-Contexto:
+Contexto sobre as regras do Truco Piauiense:
 ${contexto}
 
 Pergunta:
@@ -49,6 +72,12 @@ ${pergunta}`;
             body: JSON.stringify({
                 model: "openai/gpt-oss-20b",
                 messages: [{ role: "user", content: promptText }],
+                // temperature 0: o modelo estava, de forma intermitente, ignorando o
+                // contexto e completando lacunas com conhecimento pré-treinado de
+                // "Truco" genérico (ex: baralho de 40 cartas, "envido") mesmo com o
+                // contexto correto e instrução explícita contra isso. Baixar a
+                // temperatura elimina essa variância e o mantém preso ao contexto.
+                temperature: 0,
             }),
             signal: controller.signal,
         });
@@ -72,14 +101,19 @@ async function setupRAG() {
     const loader = new TextLoader("data/conhecimento.txt");
     const docs = await loader.load();
 
+    // Prioriza quebrar nos separadores de seção do conhecimento.txt
+    // (ex: "Estrutura do Jogo", "Pontuação") antes de cair em quebras
+    // genéricas, pra cada chunk carregar uma seção de regra inteira em vez
+    // de um pedaço picado dela.
     const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 512,
-        chunkOverlap: 50,
+        chunkSize: 800,
+        chunkOverlap: 100,
+        separators: ["\n-------------------------------------\n", "\n\n", "\n", " ", ""],
     });
     const splitDocs = await textSplitter.splitDocuments(docs);
 
     const vectorstore = await FaissStore.fromDocuments(splitDocs, embeddings);
-    retriever = vectorstore.asRetriever();
+    retriever = vectorstore.asRetriever({ k: 6 });
 
     console.log("✅ Sistema RAG pronto e indexado!");
 }
